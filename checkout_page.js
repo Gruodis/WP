@@ -55,3 +55,60 @@ if (condition2) {
         }, 200);
     })
 }
+
+const forms = document.forms[0];
+let selectElement = forms.querySelector('input[type="submit"]');
+
+console.log(`Rem `, forms, forms.length, selectElement);
+selectElement.addEventListener("click", myFunction);
+
+function myFunction() {
+    const rem = document.querySelectorAll('span.form-errors-wrapper');
+    console.log(`Rem 2`, rem, rem.length);
+    document.querySelectorAll('span.form-errors-wrapper').forEach(e => e.remove());
+}
+
+
+
+
+
+for (let i = 0; i < forms.length; i++) {
+    forms[i].addEventListener('invalid', function (e) {
+        e.preventDefault();
+        //Possibly implement your own here.
+        console.log(`Works || ===`, forms[i], `=== END`)
+
+        const parentDiv = forms[i].parentNode;
+        console.log(`parent `, parentDiv)
+        const span = document.createElement('span');
+        span.classList.add('form-errors-wrapper');
+        let text = document.createTextNode('Būtina užpildyti.');
+        span.appendChild(text);
+        parentDiv.insertBefore(span, forms[i])
+
+    }, true);
+    forms[i].addEventListener('input', function (event) {
+        // Each time the user types something, we check if the
+        // form fields are valid.
+        const el = forms[i].parentNode.className;
+        console.log(`Works EL`, el)
+        let trx;
+        if (el === "") {
+            console.log(`GGGGGGGGGG`)
+            trx = document.querySelector(`label span.form-errors-wrapper`);
+        } else {
+            trx = document.querySelector(`${'.' + el} span.form-errors-wrapper`);
+        }
+        console.log(`trx`, trx)
+        //if (forms[i].validity.valid && trx != null) {
+        if (forms[i].validity.valid && trx != null) {
+            // In case there is an error message visible, if the field
+            // is valid, we remove the error message.
+            //        emailError.innerHTML = ''; // Reset the content of the message
+            //        emailError.className = 'error'; // Reset the visual state of the message
+            //		editSelect.remove();
+
+            trx.remove(); // Removes the div with the 'div-02' id
+        }
+    });
+}
