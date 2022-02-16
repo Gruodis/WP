@@ -25,7 +25,7 @@ jQuery('.gallery').slick({
         {
             breakpoint: 480,
             settings: {
-                arrows: true,
+                arrows: false,
                 centerMode: true,
                 centerPadding: '40px',
                 slidesToShow: 1,
@@ -54,24 +54,29 @@ jQuery('.gallery').slick({
 //  return false;
 //});
 // jQuery implementation
-// Rasome funkcija responsive langui
 
+
+
+// remove commas from custom atrributes in room summary
+const forms = document.getElementsByTagName('form')[0];
+if (forms) {
 let tags = document.querySelectorAll('.mphb-single-room-type-attributes li .mphb-attribute-value');
 console.log(`tags`, tags);
 for (i = 0; i < tags.length; i++) {
     tags[i].innerHTML = tags[i].innerHTML.replace(/\,/g, '');
 }
 
+// block page scrolling when datepick opened for small devices
 
 const bodyClass = document.querySelector('body');
 const inputId2 = document.querySelector('[id^="mphb_check_out_date-"]');
 const inputId = document.querySelector('[id^="mphb_check_in_date-"]');
-let intWV2;
+    let windowInnerWidth;
 //let intVH2;
 let responsiveWindow = () => {
-    intWV2 = window.innerWidth;
+    windowInnerWidth = window.innerWidth;
     //  intVH2 = window.innerHeight;
-    console.log(`YYY`, intWV2);
+    console.log(`YYY`, windowInnerWidth);
 }
 responsiveWindow();
 
@@ -80,15 +85,15 @@ window.addEventListener('resize', () => {
 
     responsiveWindow();
 
-    console.log(`responsive onResize`, intWV2);
+    console.log(`responsive onResize`, windowInnerWidth);
     setTimeout(() => {
         scrollBlock();
 
-        if (intWV2 <= 480) {
-            console.log(`XXX`, intWV2);
+        if (windowInnerWidth <= 480) {
+            console.log(`XXX`, windowInnerWidth);
 
         } else {
-            console.log(`WWW`, intWV2);
+            console.log(`WWW`, windowInnerWidth);
 
             let zzz = bodyClass.classList.contains('fixedMobileBody'); // true
 
@@ -110,7 +115,7 @@ let scrollBlock = () => {
 
         const cal = document.querySelector('.datepick-popup');
 
-        if ((cal != null) && (intWV2 <= 480)) {
+        if ((cal != null) && (windowInnerWidth <= 480)) {
             document.body.classList.add('fixedMobileBody');
             console.log(`Add class clickInput iD1`);
             inputId.disabled = true;
@@ -123,7 +128,7 @@ let scrollBlock = () => {
 
         const cal = document.querySelector('.datepick-popup');
 
-        if ((cal != null) && (intWV2 <= 480)) {
+        if ((cal != null) && (windowInnerWidth <= 480)) {
             document.body.classList.add('fixedMobileBody');
             console.log(`Add class clickInput ID2 ==`);
             inputId2.disabled = true;
@@ -155,7 +160,19 @@ let scrollBlock = () => {
 
     });
 }
-if (intWV2 <= 480) {
-    console.log(`First Go Scroll`, intWV2);
+    if (windowInnerWidth <= 480) {
+        console.log(`First Go Scroll`, windowInnerWidth);
     scrollBlock();
+}
+
+    // scroll to Booking button
+
+    const checkAvailabilityBtn = document.querySelector('.mphb-reserve-btn');
+
+    checkAvailabilityBtn.addEventListener("click", () => {
+
+        console.log(`BTN scroll `, checkAvailabilityBtn);
+        checkAvailabilityBtn.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+
+    });
 }
