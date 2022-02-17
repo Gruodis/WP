@@ -66,6 +66,8 @@ if (condition2) {
 
 const forms = document.getElementsByTagName('form')[0];
 if (forms) {
+
+    document.getElementById("mphb_phone").attributes["type"].value = "tel";
     const submitButton = forms.querySelector('input[type="submit"]');
 
     submitButton.addEventListener("click", () => {
@@ -92,6 +94,8 @@ if (forms) {
             e.preventDefault(); // prevent default validation check
             // console.log(`Works || ===`, forms[i], `=== END`)
 
+
+
             const parentDiv = forms[i].parentNode;
             // console.log(`parent `, parentDiv)
             const span = document.createElement('span');
@@ -104,9 +108,20 @@ if (forms) {
                 text = document.createTextNode('Būtina susipažinti su sodybos taisyklėmis ir pažymėti varnelę.');
                 console.log(`text check`, text);
             }
-            else if (forms[i].tagName === 'SELECT') {
-                text = document.createTextNode('Nepasirinkote svečių skaičiaus.');
-                document.querySelector('p.mphb-errors-wrapper').textContent = 'Būtina nurodyti svečių skaičių.';
+            // else if (forms[i].tagName === 'SELECT') {
+            else if (forms[i].id === theSelect.id) {
+                text = document.createTextNode('Būtina nurodyti suaugusiųjų skaičių.');
+                document.querySelector('p.mphb-errors-wrapper').textContent = 'Būtina nurodyti suaugusiųjų skaičių.';
+                console.log(`text select adults `, text);
+            }
+            else if (forms[i].id === theSelectChild.id) {
+                text = document.createTextNode('Būtina nurodyti vaikų skaičių.');
+                document.querySelector('p.mphb-errors-wrapper').textContent = 'Būtina nurodyti vaikų skaičių.';
+                console.log(`text select children `, text, document.querySelector('p.mphb-errors-wrapper'), ` end children`);
+            }
+            else if (forms[i].type === 'tel') {
+                text = document.createTextNode('Neteisingai įvestas telefono numeris.');
+                document.querySelector('p.mphb-errors-wrapper').textContent = 'Neteisingai įvestas telefono numeris.';
                 console.log(`text select `, text);
             }
             else {
@@ -117,12 +132,55 @@ if (forms) {
             parentDiv.insertBefore(span, forms[i])
 
         }, true);
-        forms[i].addEventListener('input', function () {
+        forms[i].addEventListener('change', function () {
 
-            console.log(`value`, forms[i].value);
+            console.log(`value`, forms[i].value, ` Child `, theSelectChild.value, ` end child`);
             console.log(`type`, forms[i].type);
 
 
+
+
+
+            if (forms[i].type === 'tel') {
+
+                let telFormat = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{4,8}$/im;
+                if (forms[i].value.match(telFormat)) {
+                    console.log(`CONGRATS valid tel `, forms[i])
+                    forms[i].focus();
+                    // reik parasyt, kad input:invalid
+                    //mphb_phone
+
+                    document.querySelector('[type="tel"]').invalid = false;
+                    const inc = document.querySelector('[type="tel"]');
+                    inc.setCustomValidity("");
+                    const el = forms[i].parentNode.className;
+                    const trx = document.querySelector(`${'.' + el} span.form-errors-wrapper`);
+                    if (forms[i].validity.valid && trx != null) {
+                        trx.classList.add("success");
+                        trx.textContent = 'Patikrinta.';
+                    }
+                    return true;
+                }
+                else {
+                    //console.log(`Invalid email `, forms[i])
+                    //alert("You have entered an invalid email address!");
+                    forms[i].focus();
+                    //document.querySelector('[type="email"]').invalid = true;
+                    const inc = document.querySelector('[type="tel"]');
+                    inc.setCustomValidity("Patikrinkite ar teisingai įvestas telefono numeris.");
+
+                    const el = forms[i].parentNode.className;
+                    const trx = document.querySelector(`${'.' + el} span.form-errors-wrapper`);
+                    if (trx != null) {
+                        trx.classList.remove("success");
+                        trx.textContent = 'Neteisingai įvestas telefono numeris.';
+                    }
+
+                    //console.log(`Invalid email `, document.querySelector('[type="email"]').validity)
+                    return false;
+                }
+
+            }
 
             if (forms[i].type === 'email') {
 
@@ -131,6 +189,8 @@ if (forms) {
                     console.log(`CONGRATS valid email `, forms[i])
                     forms[i].focus();
                     // reik parasyt, kad input:invalid
+                    //mphb_phone
+
                     document.querySelector('[type="email"]').invalid = false;
                     const inc = document.querySelector('[type="email"]');
                     inc.setCustomValidity("");
@@ -138,7 +198,7 @@ if (forms) {
                     const trx = document.querySelector(`${'.' + el} span.form-errors-wrapper`);
                     if (forms[i].validity.valid && trx != null) {
                         trx.classList.add("success");
-                        trx.textContent = 'Nėra klaidų.';
+                        trx.textContent = 'Patikrinta.';
                     }
                     return true;
                 }
@@ -161,6 +221,28 @@ if (forms) {
                     return false;
                 }
             };
+            //chidren error validation
+
+            setTimeout(() => {
+
+                let trx = document.querySelector(`${'.' + theSelectChild.parentNode.className} span.form-errors-wrapper`);
+
+                if (theSelectChild.value != '' && trx != null) {
+                    trx = document.querySelector(`${'.' + theSelectChild.parentNode.className} span.form-errors-wrapper`);
+
+                    trx.classList.add("success");
+                    trx.textContent = 'Patikrinta.';
+
+                    //test
+                    console.log(`value cild on change Ok`, theSelectChild.parentNode.className)
+                }
+                else if (theSelectChild.value === '' && trx != null) {
+                    trx.classList.remove("success");
+                    trx.textContent = 'Būtina nurodyti vaikų skaičių.';
+
+                    console.log(`value cild on change klaida`, theSelectChild.parentNode.className)
+                }
+            }, 300);
 
 
         const el = forms[i].parentNode.className;
@@ -177,11 +259,11 @@ if (forms) {
             if (forms[i].validity.valid && trx != null && trx != null) {
                 //trx.remove(); // Remove
                 trx.classList.add("success");
-                trx.textContent = 'Nėra klaidų.';
+                trx.textContent = 'Patikrinta.';
             };
 
 
-            if (forms[i].validity.valid === false) {
+            if (forms[i].validity.valid === false && trx != null) {
                 trx.classList.remove("success");
 
                 if (forms[i].type === 'email') { //Neteisingai įvestas el.pašto adresas.
@@ -191,9 +273,15 @@ if (forms) {
                     trx.textContent = 'Būtina susipažinti su sodybos taisyklėmis ir pažymėti varnelę.';
 
                 }
-                else if (forms[i].tagName === 'SELECT') {
-                    trx.textContent = 'Nepasirinkote svečių skaičiaus.';
-                    document.querySelector('p.mphb-errors-wrapper').textContent = 'Būtina nurodyti svečių skaičių.';
+                // else if (forms[i].tagName === 'SELECT') {
+                else if (forms[i].id === theSelect.id) {
+                    trx.textContent = 'Būtina nurodyti suaugusiųjų skaičių.';
+                    document.querySelector('p.mphb-errors-wrapper').textContent = 'Būtina nurodyti suaugusiųjų skaičių.';
+
+                }
+                else if (forms[i].id === theSelectChild.id) {
+                    trx.textContent = 'Būtina nurodyti vaikų skaičių.';
+                    document.querySelector('p.mphb-errors-wrapper').textContent = 'Būtina nurodyti vaikų skaičių.';
 
                 }
                 else {
