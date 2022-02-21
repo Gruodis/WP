@@ -52,3 +52,20 @@ function scrollToInvalid() {
     console.log(`Scroll `, invalidInputs[1])
 
 }
+
+
+let test = document.getElementById("test");
+
+// This handler will be executed only once when the cursor
+// moves over the unordered list
+
+
+// This handler will be executed every time the cursor
+// is moved over a different list item
+test.addEventListener("mouseover", function (event) {
+    // highlight the mouseover target
+    event.target.style.backgroundColor = "orange";
+
+    // reset the color after a short delay
+
+}, false);
