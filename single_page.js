@@ -60,11 +60,12 @@ jQuery('.gallery').slick({
 // remove commas from custom atrributes in room summary
 const forms = document.getElementsByTagName('form')[0];
 if (forms) {
-let tags = document.querySelectorAll('.mphb-single-room-type-attributes li .mphb-attribute-value');
-console.log(`tags`, tags);
-for (i = 0; i < tags.length; i++) {
-    tags[i].innerHTML = tags[i].innerHTML.replace(/\,/g, '');
-}
+
+// let tags = document.querySelectorAll('.mphb-single-room-type-attributes li .mphb-attribute-value');
+// console.log(`tags`, tags);
+// for (i = 0; i < tags.length; i++) {
+//     tags[i].innerHTML = tags[i].innerHTML.replace(/\,/g, '');
+// }
 
 // block page scrolling when datepick opened for small devices
 
