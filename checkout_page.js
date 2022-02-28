@@ -1,5 +1,8 @@
 const theSelect = document.getElementById('mphb_room_details-0-adults');
 const theSelectChild = document.getElementById('mphb_room_details-0-children');
+const vipHouse = document.querySelector('.mphb-room-details input').value;
+
+//console.log(`value`, vipHouse)
 let condition = true;
 let condition2 = true;
 
@@ -17,7 +20,20 @@ else {
     condition = false;
     //console.log(`value False 2`)
 }
-if (condition) {
+if (vipHouse === '2878') {
+    //console.log(`VALIO`, vipHouse);
+    let options = theSelect.getElementsByTagName('OPTION');
+    //  console.log(`value`, options.length, options)
+
+    for (let i = 0; i < options.length; i++) {
+        if (options[i].innerHTML < 8) {
+            theSelect.removeChild(options[i]);
+            i--; // options have now less element, then decrease i
+        }
+    }
+    document.getElementById('mphb_room_details-0-adults').value = '8';
+}
+else if (condition) {
 
    // console.log(`value`, theSelect.length, theSelect)
 
