@@ -1,13 +1,18 @@
 const theSelect = document.getElementById('mphb_room_details-0-adults');
 const theSelectChild = document.getElementById('mphb_room_details-0-children');
-const vipHouse = document.querySelector('.mphb-room-details input').value;
+const vipHouse = document.querySelector('.mphb-room-details input');
+let options = [];
+let optionsChild = [];
 
 //console.log(`value`, vipHouse)
 let condition = true;
 let condition2 = true;
 
 if (theSelect != null) {
-    if (theSelect.length > 11) {
+
+    options = theSelect.getElementsByTagName('OPTION');
+
+    if (theSelect.length > 5) {
         condition = true; 
       //  console.log(`value True`)
     }
@@ -20,10 +25,11 @@ else {
     condition = false;
     //console.log(`value False 2`)
 }
-if (vipHouse === '2878') {
-    //console.log(`VALIO`, vipHouse);
-    let options = theSelect.getElementsByTagName('OPTION');
-    //  console.log(`value`, options.length, options)
+if (vipHouse != null) {
+    if (vipHouse.value === '2878') {
+        console.log(`VALIO`, vipHouse.value);
+        //let options = theSelect.getElementsByTagName('OPTION');
+        console.log(`value`, options.length, options)
 
     for (let i = 0; i < options.length; i++) {
         if (options[i].innerHTML < 8) {
@@ -34,10 +40,28 @@ if (vipHouse === '2878') {
     document.getElementById('mphb_room_details-0-adults').value = '8';
 }
 else if (condition) {
+        if (options.length > 11) {
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].innerHTML < 10) {
+                    theSelect.removeChild(options[i]);
+                    i--; // options have now less element, then decrease i
+                }
+            }
+
+        }
+        else if (options.length > 5) {
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].innerHTML < 4) {
+                    theSelect.removeChild(options[i]);
+                    i--; // options have now less element, then decrease i
+                }
+            }
+
+        } else {
 
    // console.log(`value`, theSelect.length, theSelect)
 
-    let options = theSelect.getElementsByTagName('OPTION');
+    //let options = theSelect.getElementsByTagName('OPTION');
   //  console.log(`value`, options.length, options)
 
     for (let i = 0; i < options.length; i++) {
@@ -47,9 +71,13 @@ else if (condition) {
         }
     }
 }
+    }
+}
+
 
 if (theSelectChild != null) {
     condition2 = true; // your condition
+    optionsChild = theSelectChild.getElementsByTagName('OPTION');
 }
 else {
     condition2 = false;
@@ -58,8 +86,8 @@ else {
 if (condition2) {
     document.getElementById('mphb_room_details-0-adults').addEventListener("change", () => {
         setTimeout(() => {
-            const optionsChild = theSelectChild.getElementsByTagName('OPTION');
-           // console.log(` Child length #1`, optionsChild.length);
+            optionsChild = theSelectChild.getElementsByTagName('OPTION');
+            console.log(` Child length #1`, optionsChild.length, optionsChild);
 
             for (let i = 0; i < optionsChild.length; i++) {
                 if (optionsChild.length < 3) {
