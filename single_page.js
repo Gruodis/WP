@@ -86,15 +86,15 @@ window.addEventListener('resize', () => {
 
     responsiveWindow();
 
-    console.log(`responsive onResize`, windowInnerWidth);
+    //console.log(`responsive onResize`, windowInnerWidth);
     setTimeout(() => {
         scrollBlock();
 
         if (windowInnerWidth <= 480) {
-            console.log(`XXX`, windowInnerWidth);
+           // console.log(`XXX`, windowInnerWidth);
 
         } else {
-            console.log(`WWW`, windowInnerWidth);
+           // console.log(`WWW`, windowInnerWidth);
 
             let zzz = bodyClass.classList.contains('fixedMobileBody'); // true
 
@@ -118,7 +118,7 @@ let scrollBlock = () => {
 
         if ((cal != null) && (windowInnerWidth <= 480)) {
             document.body.classList.add('fixedMobileBody');
-            console.log(`Add class clickInput iD1`);
+           // console.log(`Add class clickInput iD1`);
             inputId.disabled = true;
         }
 
@@ -131,7 +131,7 @@ let scrollBlock = () => {
 
         if ((cal != null) && (windowInnerWidth <= 480)) {
             document.body.classList.add('fixedMobileBody');
-            console.log(`Add class clickInput ID2 ==`);
+          //  console.log(`Add class clickInput ID2 ==`);
             inputId2.disabled = true;
         }
 
@@ -143,7 +143,7 @@ let scrollBlock = () => {
             const cal = document.querySelector('.datepick-popup');
             if (cal != null) {
                 //	document.body.classList.add('fixedMobileBody');
-                console.log(`IF body Click do nothing `);
+             //   console.log(`IF body Click do nothing `);
 
             } else {
                 let zzz = bodyClass.classList.contains('fixedMobileBody'); // true
@@ -152,7 +152,7 @@ let scrollBlock = () => {
 
 
                     document.body.classList.remove('fixedMobileBody');
-                    console.log(`Else body Click remove class `);
+                 //   console.log(`Else body Click remove class `);
                     inputId.disabled = false;
                     inputId2.disabled = false;
                 }
@@ -162,7 +162,7 @@ let scrollBlock = () => {
     });
 }
     if (windowInnerWidth <= 480) {
-        console.log(`First Go Scroll`, windowInnerWidth);
+       // console.log(`First Go Scroll`, windowInnerWidth);
     scrollBlock();
 }
 
@@ -172,7 +172,7 @@ let scrollBlock = () => {
 
     checkAvailabilityBtn.addEventListener("click", () => {
 
-        console.log(`BTN scroll `, checkAvailabilityBtn);
+       // console.log(`BTN scroll `, checkAvailabilityBtn);
         checkAvailabilityBtn.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
 
     });
