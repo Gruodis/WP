@@ -55,7 +55,7 @@ jQuery('.gallery').slick({
 //});
 // jQuery implementation
 
-
+// reformat
 
 // remove commas from custom atrributes in room summary
 const forms = document.getElementsByTagName('form')[0];
