@@ -1,5 +1,6 @@
 // Slick
 // =====
+//
 
 jQuery('.gallery').slick({
     slidesToShow: 3,
