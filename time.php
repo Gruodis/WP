@@ -63,6 +63,7 @@
 			* echo current_time( 'timestamp', true );
 			* result = 1647169125
 			*
+			* https://wptips.dev/datetime-object/
 			 * https://developer.wordpress.org/reference/functions/current_time/
 			 * https://make.wordpress.org/core/2019/09/23/date-time-improvements-wp-5-3/
 			 * 
