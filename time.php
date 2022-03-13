@@ -52,7 +52,7 @@
 			 *  Tarkime užklausą gavome 16:00val., 
 			 * 	tuomet paskaičiuojame, kiek sekundžių liko nuo 16:00 iki 19:00val., gauname 10800, 
 			 * 
-			 * 	$setExpirationTime = 10800;
+			 * 	$timeToExpire = 10800;
 			 * 
 			 * https://developer.wordpress.org/reference/functions/current_time/
 			 * https://make.wordpress.org/core/2019/09/23/date-time-improvements-wp-5-3/
