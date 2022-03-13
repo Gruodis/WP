@@ -1,4 +1,120 @@
-<?php
+<?
+
+// MPHB/includes/post-types/booking-cpt/status.php
+
+namespace MPHB\PostTypes\BookingCPT;
+
+use \MPHB\PostTypes\AbstractCPT;
+
+class Statuses extends AbstractCPT\Statuses {
+
+	const STATUS_CONFIRMED		 = 'confirmed';
+	const STATUS_PENDING			 = 'pending';
+	const STATUS_PENDING_USER		 = 'pending-user';
+	const STATUS_PENDING_PAYMENT	 = 'pending-payment';
+	const STATUS_CANCELLED		 = 'cancelled';
+	const STATUS_ABANDONED		 = 'abandoned';
+	const STATUS_AUTO_DRAFT		 = 'auto-draft';
+
+	public function __construct( $postType ){
+		parent::__construct( $postType );
+		add_action( 'transition_post_status', array( $this, 'transitionStatus' ), 10, 3 );
+	}
+
+	protected function initStatuses(){
+
+		$this->statuses[self::STATUS_PENDING_USER] = array(
+			'lock_room' => true
+		);
+
+		$this->statuses[self::STATUS_PENDING_PAYMENT] = array(
+			'lock_room' => true
+		);
+
+		$this->statuses[self::STATUS_PENDING] = array(
+			'lock_room' => true
+		);
+
+		$this->statuses[self::STATUS_ABANDONED] = array(
+			'lock_room' => false
+		);
+
+		$this->statuses[self::STATUS_CONFIRMED] = array(
+			'lock_room' => true
+		);
+
+		$this->statuses[self::STATUS_CANCELLED] = array(
+			'lock_room' => false
+		);
+	}
+
+	public function getStatusArgs( $statusName ){
+		$args = array();
+
+		switch ( $statusName ) {
+			case self::STATUS_PENDING_USER:
+				$args	 = array(
+					'label'						 => _x( 'Pending User Confirmation', 'Booking status', 'motopress-hotel-booking' ),
+					'public'					 => true,
+					'exclude_from_search'		 => false,
+					'show_in_admin_all_list'	 => true,
+					'show_in_admin_status_list'	 => true,
+					'label_count'				 => _n_noop( 'Pending User Confirmation <span class="count">(%s)</span>', 'Pending User Confirmation <span class="count">(%s)</span>', 'motopress-hotel-booking' )
+				);
+				break;
+			case self::STATUS_PENDING_PAYMENT:
+				$args	 = array(
+					'label'						 => _x( 'Pending Payment', 'Booking status', 'motopress-hotel-booking' ),
+					'public'					 => true,
+					'exclude_from_search'		 => false,
+					'show_in_admin_all_list'	 => true,
+					'show_in_admin_status_list'	 => true,
+					'label_count'				 => _n_noop( 'Pending Payment <span class="count">(%s)</span>', 'Pending Payment <span class="count">(%s)</span>', 'motopress-hotel-booking' )
+				);
+				break;
+			case self::STATUS_PENDING:
+				$args	 = array(
+					'label'						 => _x( 'Pending Admin', 'Booking status', 'motopress-hotel-booking' ),
+					'public'					 => true,
+					'exclude_from_search'		 => false,
+					'show_in_admin_all_list'	 => true,
+					'show_in_admin_status_list'	 => true,
+					'label_count'				 => _n_noop( 'Pending Admin <span class="count">(%s)</span>', 'Pending Admin <span class="count">(%s)</span>', 'motopress-hotel-booking' )
+				);
+				break;
+			case self::STATUS_ABANDONED:
+				$args	 = array(
+					'label'						 => _x( 'Abandoned', 'Booking status', 'motopress-hotel-booking' ),
+					'public'					 => true,
+					'exclude_from_search'		 => false,
+					'show_in_admin_all_list'	 => true,
+					'show_in_admin_status_list'	 => true,
+					'label_count'				 => _n_noop( 'Abandoned <span class="count">(%s)</span>', 'Abandoned <span class="count">(%s)</span>', 'motopress-hotel-booking' )
+				);
+				break;
+			case self::STATUS_CONFIRMED:
+				$args	 = array(
+					'label'						 => _x( 'Confirmed', 'Booking status', 'motopress-hotel-booking' ),
+					'public'					 => true,
+					'exclude_from_search'		 => false,
+					'show_in_admin_all_list'	 => true,
+					'show_in_admin_status_list'	 => true,
+					'label_count'				 => _n_noop( 'Confirmed <span class="count">(%s)</span>', 'Confirmed <span class="count">(%s)</span>', 'motopress-hotel-booking' )
+				);
+				break;
+			case self::STATUS_CANCELLED:
+				$args	 = array(
+					'label'						 => _x( 'Cancelled', 'Booking status', 'motopress-hotel-booking' ),
+					'public'					 => true,
+					'exclude_from_search'		 => false,
+					'show_in_admin_all_list'	 => true,
+					'show_in_admin_status_list'	 => true,
+					'label_count'				 => _n_noop( 'Cancelled <span class="count">(%s)</span>', 'Cancelled <span class="count">(%s)</span>', 'motopress-hotel-booking' )
+				);
+				break;
+		}
+		return $args;
+	}
 
 	/**
 	 * @todo move expiration functionality to action handler
@@ -46,46 +162,31 @@
 
 		if ( $newStatus === self::STATUS_PENDING_PAYMENT ) {
 
-            /**
-             * 	Reikia paskaičiuoti $timeToExpire, kurį naudosime 78-toje eilutėje.
-			 * 
-			 * Tarkime užklausą gavome 16:00val., 
-			 * tuomet paskaičiuojame, kiek sekundžių liko nuo 16:00 iki 19:00val., gauname 10800, 
-			 * 
-			 * 	$timeToExpire = 10800;
-			 * 
-			 * echo  date( 'H:i:s', current_time( 'timestamp', false ) );
-			 * 	result = 12:58:45
-			 * 
-			 * echo  date( 'H:i:s', current_time( 'timestamp', true ) );
-			 * 	result = 10:58:45
-			 * 
-			* echo current_time( 'timestamp', true );
-			* result = 1647169125
-			*
-			* https://wptips.dev/datetime-object/
-			 * https://developer.wordpress.org/reference/functions/current_time/
-			 * https://make.wordpress.org/core/2019/09/23/date-time-improvements-wp-5-3/
-			 * 
-             */
+			// START EDIT
 
-            $myTime = '19:00:00'; // mano nurodyta valanda
-            $systemTimeStamp = $booking->current_time( 'timestamp', true ); // sistemos uzfiksuotas laikas (netestavau ar gauname laiko žymę su šita eilute ar žemiau esančia, bet šita logiškiau atrodo)
-            // $systemTimeStamp = current_time( 'time' ); // sistemos uzfiksuotas laikas
+			$timeStampHours = date( 'H', current_time( 'timestamp', false ) );
+			$timeStampMinutes = date( 'i', current_time( 'timestamp', false ) );
+			$pendingTime = MPHB()->settings()->payment()->getPendingTime();
+			$timeToExpire;
 
-            $timeToExpire; // sekundžių kintamasis
 
-			
-			if ($systemTimeStamp < $myTime ) { // skaičiuojame sekundes, jeigu užklausą gavome iki 19:00val.
-                $timeToExpire = $myTime - $systemTimeStamp;
-				
+			if ($timeStampHours < $pendingTime) {
+			$timeToExpire = ($pendingTime * HOUR_IN_SECONDS) -  (($timeStampHours * HOUR_IN_SECONDS) + ($timeStampMinutes * MINUTE_IN_SECONDS));
+//			echo "Calc seconds before: " . $timeToExpire . "\n";
+//			echo "pending time: " . $pendingTime . "\n";
+
+			} else {
+			$timeToExpire = (('86400' - (($timeStampHours * HOUR_IN_SECONDS) + ($timeStampMinutes * MINUTE_IN_SECONDS)))) + ($pendingTime * HOUR_IN_SECONDS);
+//			echo "Calc seconds after: " .  $timeToExpire . "\n";
+//			echo "pending time: " . $pendingTime . "\n";
 			}
-            else { // skaičiuojame sekundes, jeigu užklausą gavome po 19val.
-                $timeToExpire =  ('24:00:00' - $systemTimeStamp) + $myTime;
-            }
+			
+			
+			// $booking->updateExpiration( 'payment', current_time( 'timestamp', true ) + MPHB()->settings()->payment()->getPendingTime() * MINUTE_IN_SECONDS ); //default code
 
-			// $booking->updateExpiration( 'payment', current_time( 'timestamp', true ) + MPHB()->settings()->payment()->getPendingTime() * MINUTE_IN_SECONDS ); Default Code
-			$booking->updateExpiration( 'payment', current_time( 'timestamp', true ) + $timeToExpire ); // EDITED Code !!!!!!!!!!!!!!!!!!!!!
+			$booking->updateExpiration( 'payment', current_time( 'timestamp', true ) + $timeToExpire ); // + 420 = expire after 7min.
+
+			// END EDIT
 
 			MPHB()->cronManager()->getCron( 'abandon_booking_pending_payment' )->schedule();
 		}
@@ -107,4 +208,75 @@
 		}
 	}
 
-?>
+	/**
+	 *
+	 * @return array
+	 */
+	public function getLockedRoomStatuses(){
+		return array_keys( array_filter( $this->statuses, function( $status ) {
+				return isset( $status['lock_room'] ) && $status['lock_room'];
+			} ) );
+	}
+
+	/**
+	 *
+	 * @return array
+	 */
+	public function getBookedRoomStatuses(){
+		return (array) self::STATUS_CONFIRMED;
+	}
+
+	/**
+	 *
+	 * @return array
+	 */
+	public function getPendingRoomStatuses(){
+		return array(
+			self::STATUS_PENDING,
+			self::STATUS_PENDING_USER,
+			self::STATUS_PENDING_PAYMENT
+		);
+	}
+
+    /**
+     * @return array
+     *
+     * @since 3.7.6
+     */
+    public function getFailedStatuses(){
+        return array(
+            self::STATUS_CANCELLED,
+            self::STATUS_ABANDONED
+        );
+    }
+
+	/**
+	 *
+	 * @return array
+	 */
+	public function getAvailableRoomStatuses(){
+		return array_merge( 'trash', array_diff( array_keys( $this->statuses ), $this->getLockedRoomStatuses() ) );
+	}
+
+	/**
+	 *
+	 * @return string
+	 */
+	public function getDefaultNewBookingStatus(){
+		$confirmationMode = MPHB()->settings()->main()->getConfirmationMode();
+		switch ( $confirmationMode ) {
+			case 'manual':
+				$defaultStatus	 = self::STATUS_PENDING;
+				break;
+			case 'payment':
+				$defaultStatus	 = self::STATUS_PENDING_PAYMENT;
+				break;
+			case 'auto':
+			default:
+				$defaultStatus	 = self::STATUS_PENDING_USER;
+				break;
+		}
+		return $defaultStatus;
+	}
+
+}
