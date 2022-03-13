@@ -35,7 +35,7 @@
 
 		if ( $newStatus === self::STATUS_PENDING_USER ) {
 
-			$booking->updateExpiration( 'user', current_time( 'timestamp', true ) + 600 );
+			$booking->updateExpiration( 'user', current_time( 'timestamp', true ) + MPHB()->settings()->main()->getUserApprovalTime() * MINUTE_IN_SECONDS );
 
 			MPHB()->cronManager()->getCron( 'abandon_booking_pending_user' )->schedule();
 		}
@@ -46,14 +46,36 @@
 
 		if ( $newStatus === self::STATUS_PENDING_PAYMENT ) {
 
-            $myExpirationStatus;
-            
+            /**
+             * 	Reikia paskaičiuoti $timeToExpire, kurį naudosime 78-toje eilutėje.
+			 * 
+			 *  Tarkime užklausą gavome 16:00val., 
+			 * 	tuomet paskaičiuojame, kiek sekundžių liko nuo 16:00 iki 19:00val., gauname 10800, 
+			 * 
+			 * 	$setExpirationTime = 10800;
+			 * 
+			 * https://developer.wordpress.org/reference/functions/current_time/
+			 * https://make.wordpress.org/core/2019/09/23/date-time-improvements-wp-5-3/
+			 * 
+             */
+
+            $myTime = '19:00:00'; // mano nurodyta valanda
+            $systemTimeStamp = $booking->current_time( 'timestamp', true ); // sistemos uzfiksuotas laikas (netestavau ar gauname laiko žymę su šita eilute ar žemiau esančia, bet šita logiškiau atrodo)
+            // $systemTimeStamp = current_time( 'time' ); // sistemos uzfiksuotas laikas
+
+            $timeToExpire; // sekundžių kintamasis
+
 			
-			if ($booking->current_time( 'time' ) < '19:00:00' ) {
+			if ($systemTimeStamp < $myTime ) { // skaičiuojame sekundes, jeigu užklausą gavome iki 19:00val.
+                $timeToExpire = $myTime - $systemTimeStamp;
 				
 			}
+            else { // skaičiuojame sekundes, jeigu užklausą gavome po 19val.
+                $timeToExpire =  ('24:00:00' - $systemTimeStamp) + $myTime;
+            }
 
-			$booking->updateExpiration( 'payment', current_time( 'timestamp', true ) + 420 );
+			// $booking->updateExpiration( 'payment', current_time( 'timestamp', true ) + MPHB()->settings()->payment()->getPendingTime() * MINUTE_IN_SECONDS ); Default Code
+			$booking->updateExpiration( 'payment', current_time( 'timestamp', true ) + $timeToExpire ); // EDITED Code !!!!!!!!!!!!!!!!!!!!!
 
 			MPHB()->cronManager()->getCron( 'abandon_booking_pending_payment' )->schedule();
 		}
