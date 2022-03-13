@@ -49,11 +49,20 @@
             /**
              * 	Reikia paskaičiuoti $timeToExpire, kurį naudosime 78-toje eilutėje.
 			 * 
-			 *  Tarkime užklausą gavome 16:00val., 
-			 * 	tuomet paskaičiuojame, kiek sekundžių liko nuo 16:00 iki 19:00val., gauname 10800, 
+			 * Tarkime užklausą gavome 16:00val., 
+			 * tuomet paskaičiuojame, kiek sekundžių liko nuo 16:00 iki 19:00val., gauname 10800, 
 			 * 
 			 * 	$timeToExpire = 10800;
 			 * 
+			 * echo  date( 'H:i:s', current_time( 'timestamp', false ) );
+			 * 	result = 12:58:45
+			 * 
+			 * echo  date( 'H:i:s', current_time( 'timestamp', true ) );
+			 * 	result = 10:58:45
+			 * 
+			* echo current_time( 'timestamp', true );
+			* result = 1647169125
+			*
 			 * https://developer.wordpress.org/reference/functions/current_time/
 			 * https://make.wordpress.org/core/2019/09/23/date-time-improvements-wp-5-3/
 			 * 
