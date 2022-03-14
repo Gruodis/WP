@@ -169,6 +169,8 @@ class Statuses extends AbstractCPT\Statuses {
 			$pendingTime = MPHB()->settings()->payment()->getPendingTime();
 			$timeToExpire;
 
+			
+
 
 			if ($timeStampHours < $pendingTime) {
 			$timeToExpire = ($pendingTime * HOUR_IN_SECONDS) -  (($timeStampHours * HOUR_IN_SECONDS) + ($timeStampMinutes * MINUTE_IN_SECONDS));
