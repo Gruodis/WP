@@ -4,7 +4,7 @@ const vipHouse = document.querySelector('.mphb-room-details input');
 let options = [];
 let optionsChild = [];
 
-//console.log(`value`, vipHouse)
+//console.log(`value`, vipHouse) promises
 let condition = true;
 let condition2 = true;
 
